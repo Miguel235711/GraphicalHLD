@@ -12,6 +12,7 @@
 #include <fstream>
 #include <algorithm>
 #include <numeric>
+#include <set>
 
 class HLD
 {
@@ -33,9 +34,9 @@ public:
     void initializeVectors(int n);
     void buildHeavyLightDecomposition();
     int ansOfMovingNodeToLCA(int node,int lcaNode,queryType qType,bool & flag);
-    void update(int edgeIndex,int w,queryType qType);
     void initSegmentTrees();
     int query(int a,int b,queryType qType);
+    bool update(int a,int b,int w);
 protected:
 private:
     struct edge{
@@ -48,6 +49,7 @@ private:
         edge(){}
     };
     std::vector<std::vector<edge> > graph; // its size is set at the beggining of execution
+    std::vector<std::set<int> > existsEdge;
 
     std::vector<int> mapEdgeParent; //  its size is set at the beggining of execution
 
@@ -88,6 +90,7 @@ private:
             return a*b/(gcd==0?1:gcd);
         }
     };
+    void update(int edgeIndex,int w);
 };
 
 #endif // HLD_H

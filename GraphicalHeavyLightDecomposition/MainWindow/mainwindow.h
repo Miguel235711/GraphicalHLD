@@ -18,6 +18,7 @@ class MainWindow : QMainWindow
 {
 public:
     MainWindow(const QString & windowName,int titleBarHeight);
+    void init();
 protected:
 private:
     const QString & windowName;
@@ -29,7 +30,7 @@ private:
         init();
         qInfo() << "window resized";
     }
-    void init();
+
     QGridLayout * gridLayout = new QGridLayout();
 };
 

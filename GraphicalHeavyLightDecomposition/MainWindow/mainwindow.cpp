@@ -70,6 +70,6 @@ void MainWindow::init(){
     centralWidget->setLayout(mainLayout);
     mainLayout->addWidget(treeView);
     qInfo() << "filePath from mainWindow.cpp: " << treeReader.getPath() ;
-    mainLayout->addWidget(new Controls(graph.size(),treeReader.getPath()));
+    mainLayout->addWidget(new Controls(graph.size(),treeReader.getPath(),canvas));
     setCentralWidget(centralWidget);
 }

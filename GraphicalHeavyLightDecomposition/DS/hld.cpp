@@ -15,6 +15,8 @@ HLD::HLD(QString filePath)
         in>>a>>b>>w;
         graph[a].push_back(edge(i-1,b,w));
         graph[b].push_back(edge(i-1,a,w));
+        existsEdge[a].insert(b);
+        existsEdge[b].insert(a);
     }
     buildHeavyLightDecomposition();
     //debugPrint();
@@ -77,6 +79,7 @@ void HLD::calculateHeavyPaths(){//N
 }
 
 void HLD::initializeVectors(int n){ // O(5N)
+    existsEdge = std::vector<std::set<int> >(n);
     graph = std::vector<std::vector<edge> >(n,std::vector<edge>());
     parentEdge = std::vector<ParentInfo>(n,ParentInfo());
     edgeToSegmentTree = std::vector<segInfo>(n-1,segInfo());
@@ -166,8 +169,21 @@ int HLD::query(int a,int b,queryType qType){
     return comparators[qType](res1,res2);
 }
 
-void HLD::update(int edgeIndex,int w,queryType qType){ //(log(N))
-    segmentTrees[qType][edgeToSegmentTree[edgeIndex].segIndex].UpdatePos(edgeToSegmentTree[edgeIndex].indexInSeg,w);
+void HLD::update(int edgeIndex,int w){ //(log(N))
+    for(int i=0;i<segmentTrees.size();i++)
+        segmentTrees[i][edgeToSegmentTree[edgeIndex].segIndex].UpdatePos(edgeToSegmentTree[edgeIndex].indexInSeg,w);
+}
+bool HLD::update(int a, int b,int w){
+    ///find if it exists edge between this
+    auto isABAnEdge= existsEdge[a].find(b);
+    if(isABAnEdge==existsEdge[a].end()) //case when the edge does not exist
+        return false;
+    if(lca.compareLevel(a,b)<0) //level[a]<level[b]
+        std::swap(a,b);
+    //level[a]>level[b]
+    qInfo() << "update(a,b,w) a: " << a << " b: " << b;
+    update(parentEdge[a].edgeNumber,w);
+    return true;
 }
 
 void HLD::initSegmentTrees(){
