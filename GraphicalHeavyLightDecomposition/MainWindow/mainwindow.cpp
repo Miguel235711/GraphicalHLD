@@ -1,11 +1,16 @@
 #include "mainwindow.h"
 
-MainWindow::MainWindow(const QString & windowName)
+MainWindow::MainWindow(const QString & windowName,int titleBarHeight) : windowName(windowName),titleBarHeight(titleBarHeight),treeReader (TreeReader(this))
+  ,treeView(new QGraphicsView())
 {
-    auto centralWidget = new QWidget();
+    init();
+    showMaximized();
+    //qInfo() << "end of coordinates calculation";
+    /*auto centralWidget = new QWidget();
     centralWidget->setLayout(gridLayout);
     setWindowTitle(windowName);
     setCentralWidget(centralWidget);
+
     //gridLayout->addWidget(DummyWidget::getDummyWidget(),0,0);
     //nodes
     QPixmap pixmap(51,51);
@@ -49,6 +54,22 @@ MainWindow::MainWindow(const QString & windowName)
     edge->setPixmap(pixmap2);
     gridLayout->addWidget(edge,1,4);
     edge2->setPixmap(pixmap3);
-    gridLayout->addWidget(edge2,1,6);
-    showMaximized();
+    gridLayout->addWidget(edge2,1,6);*/
+}
+
+void MainWindow::init(){
+    auto coordinates=treeReader.getNodeCoordinates(width(),height());
+    for(auto coordinate : coordinates)
+        qInfo() << coordinate.first << " " << coordinate.second ;
+    auto graph = treeReader.getGraph();
+    auto canvas = new Canvas(coordinates,graph,titleBarHeight,width(),height());
+    treeView->setAlignment(Qt::AlignTop|Qt::AlignLeft);
+    treeView->setScene(canvas);
+    auto mainLayout = new QVBoxLayout();
+    auto centralWidget = new QWidget();
+    centralWidget->setLayout(mainLayout);
+    mainLayout->addWidget(treeView);
+    qInfo() << "filePath from mainWindow.cpp: " << treeReader.getPath() ;
+    mainLayout->addWidget(new Controls(graph.size(),treeReader.getPath()));
+    setCentralWidget(centralWidget);
 }
