@@ -16,14 +16,16 @@ Canvas::Canvas(std::vector<std::pair<int,int> >coords,std::vector<std::vector<Ed
                 cost->setPos(xMid,yMid);
                 cost->setPlainText(QString::number(adjacent.cost));
                 cost->setDefaultTextColor(Qt::blue);
+                cost->setFont(QFont("Sans",15));
                 addItem(cost);
              }
         addEllipse(coord.first,coord.second,40,40,QPen(Qt::red),QBrush(Qt::red));
         visited[i]=true;
         auto io = new QGraphicsTextItem();
-        io->setPos(coord.first+15,coord.second+15);
+        io->setPos(coord.first+6,coord.second+7.5);
         io->setPlainText(QString::number(i));
         io->setDefaultTextColor(Qt::white);
+        io->setFont(QFont("Sans",15));
         addItem(io);
     }
     //addEllipse(400,400,100,100,QPen(Qt::red),QBrush(Qt::red));
